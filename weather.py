@@ -48,6 +48,10 @@ def save_to_json(data: list, filename: str) -> None:
     except Exception as e:
         print(f"Saving error: {e}")
 
+def find_hottest_city(data: list) -> dict:
+    hottest_city = max((city for city in data), key=lambda city: city['temperature'])
+    return(hottest_city)
+
 def main():
     print("=== Weather Collector ===\n")
     weather_data = collect_all_cities(CITIES)
@@ -58,6 +62,7 @@ def main():
               f"humidity {record['humidity']}%, "
               f"wind {record['wind_speed']} km/h")
     
+    print(f"\nThe hotest city: {find_hottest_city(weather_data)['city']}")
     save_to_json(weather_data, "weather_data.json")
 
 
