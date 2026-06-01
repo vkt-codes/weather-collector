@@ -20,7 +20,7 @@ def get_weather(lat: float, lon: float) -> dict:
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
-        print(f"Ошибка запроса: {e}")
+        print(f"Request error: {e}")
         return {}
 
 def collect_all_cities(cities: dict) -> list:
@@ -44,26 +44,26 @@ def save_to_json(data: list, filename: str) -> None:
     try:
         with open(filename, "w", encoding="utf-8") as file:
             json.dump(data, file, indent=2, ensure_ascii=False)
-        print(f"Save to {filename}")
-    except Exception as e:
+        print(f"Saved to {filename}")
+    except OSError as e:
         print(f"Saving error: {e}")
 
 def find_hottest_city(data: list) -> dict:
-    hottest_city = max((city for city in data), key=lambda city: city['temperature'])
-    return(hottest_city)
+    hottest_city = max(data, key=lambda city: city['temperature'])
+    return hottest_city
 
 def main():
     print("=== Weather Collector ===\n")
     weather_data = collect_all_cities(CITIES)
-    
-    print("\n=== Results ===")
-    for record in weather_data:
-        print(f"{record['city']}: {record['temperature']}°C, "
-              f"humidity {record['humidity']}%, "
-              f"wind {record['wind_speed']} km/h")
-    
-    print(f"\nThe hotest city: {find_hottest_city(weather_data)['city']}")
-    save_to_json(weather_data, "weather_data.json")
+    if weather_data:
+        print("\n=== Results ===")
+        for record in weather_data:
+            print(f"{record['city']}: {record['temperature']}°C, "
+                f"humidity {record['humidity']}%, "
+                f"wind {record['wind_speed']} km/h")
+        
+        print(f"\nThe hottest city: {find_hottest_city(weather_data)['city']}")
+        save_to_json(weather_data, "weather_data.json")
 
 
 if __name__ == "__main__":
